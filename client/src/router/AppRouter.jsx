@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes,Route,Navigate } from 'react-router-dom'
 import Home from '../pages/Public/Home/Home'
 import PublicLayout from '../layouts/PublicLayout'
+import AdminLayout from '../layouts/AdminLayout'
 // import AdminLayout from '../layouts/AdminLayout'
 
 const AppRouter = () => {
@@ -21,6 +22,7 @@ const AppRouter = () => {
           <Route path="/admin/topscorers" element={<TopScorers />} />
           <Route path="/admin/finals" element={<Finals />} />
         </Route> */}
+        <Route path='/admin' element={<AdminLayout/>}/>
       </Routes>
     </>
   );

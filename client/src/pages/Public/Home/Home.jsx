@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+export default function PublicHome() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 

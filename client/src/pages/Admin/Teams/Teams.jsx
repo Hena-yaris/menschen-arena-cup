@@ -17,7 +17,7 @@ export default function Teams() {
   const fetchTeams = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/api/teams");
+      const res = await api.get("/teams");
       setTeams(res.data);
       setError("");
     } catch (err) {
@@ -38,7 +38,7 @@ export default function Teams() {
 
     try {
       setCreating(true);
-      await api.post("/api/teams", { name: name.trim() });
+      await api.post("/teams", { name: name.trim() });
       setName("");
       await fetchTeams();
     } catch (err) {
@@ -52,7 +52,7 @@ export default function Teams() {
   const handleDelete = async (id) => {
     if (!confirm("Delete this team? This cannot be undone.")) return;
     try {
-      await api.delete(`/api/teams/${id}`);
+      await api.delete(`/teams/${id}`);
       setTeams((prev) => prev.filter((t) => t._id !== id));
       setError("");
     } catch (err) {
@@ -72,7 +72,7 @@ export default function Teams() {
       return;
 
     try {
-       await api.post("/api/matches/generate");
+       await api.post("/matches/generate");
       alert(
         "Matches generated successfully (round-robin style)! Check the Match Control tab."
       );

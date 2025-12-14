@@ -1,6 +1,6 @@
 import Team from "../models/Team.js";
 import Match from "../models/Match.js"
-import { recalculateStandings } from "../utils/recalculateStandings.js";
+import recalculateStandings from "../utils/recalculateStandings.js";
 
 
 // ------------------------

@@ -1,7 +1,10 @@
-import Team from "../models/Team.js";
-import Match from "../models/Match.js"
-import recalculateStandings from "../utils/recalculateStandings.js";
+// src/controllers/matchController.js (COMPLETE CODE)
 
+import Team from "../models/Team.js";
+import Match from "../models/Match.js";
+import Player from "../models/Player.js"; 
+import recalculateStandings from "../utils/recalculateStandings.js";
+import updatePlayerStats from "../utils/updatePlayerStats.js"; // NEW IMPORT
 
 // ------------------------
 // 1. Generate matches
@@ -19,13 +22,12 @@ export const generateMatches = async (req, res) => {
 
     if (teams.length !== 4) {
       return res.status(400).json({
-        message: "You must have exactly 4 teams to generate matches."
+        message: "You must have exactly 4 teams to generate matches.",
       });
     }
 
-    const matches = [];
+    const matches = []; // Double round robin: each pair plays twice
 
-    // Double round robin: each pair plays twice
     for (let i = 0; i < teams.length; i++) {
       for (let j = i + 1; j < teams.length; j++) {
         matches.push({
@@ -46,7 +48,6 @@ export const generateMatches = async (req, res) => {
       total: saved.length,
       matches: saved,
     });
-
   } catch (error) {
     res.status(500).json({ message: "Error generating matches", error });
   }
@@ -57,11 +58,12 @@ export const generateMatches = async (req, res) => {
 // ------------------------
 export const getAllMatches = async (req, res) => {
   try {
-    const matches = await Match
-      .find()
+    const matches = await Match.find()
       .populate("homeTeam")
-      .populate("awayTeam");
-    //   .populate("manOfTheMatch");
+      .populate("awayTeam")
+      // NEW: Populate player references for displaying stats
+      .populate("manOfTheMatch", "name")
+      .populate("scorers.player", "name team");
 
     res.status(200).json(matches);
   } catch (error) {
@@ -88,10 +90,10 @@ export const updateMatchScore = async (req, res) => {
 
     if (!match) {
       return res.status(404).json({ message: "Match not found" });
-    }
+    } // 🔥 Re-run ALL stat updates after a score change
 
-    // 🔥 auto-update standings
-    await recalculateStandings();
+    await recalculateStandings(); // Updates Team stats
+    await updatePlayerStats(); // Updates Player stats (goals/MOTM counts)
 
     res.status(200).json(match);
   } catch (error) {
@@ -99,36 +101,62 @@ export const updateMatchScore = async (req, res) => {
   }
 };
 
+// ------------------------
+// 4. Save Match Stats (NEW FUNCTION)
+// ------------------------
+export const saveMatchStats = async (req, res) => {
+  const { matchId, manOfTheMatch, scorers } = req.body;
 
-// ------------------------
-// 4. Set Man of the Match
-// ------------------------
-export const setManOfTheMatch = async (req, res) => {
   try {
-    const { playerId } = req.body;
+    // 1. Validate status before saving stats
+    const match = await Match.findById(matchId);
+    if (!match || match.status !== "finished") {
+      return res
+        .status(404)
+        .json({ message: "Match not found or score not finalized." });
+    }
 
-    const match = await Match.findByIdAndUpdate(
-      req.params.id,
-      { manOfTheMatch: playerId },
+    // 2. Prepare the update data for the Match model
+    const updateData = {
+      manOfTheMatch: manOfTheMatch || null, // Player ID or null
+      scorers: scorers || [], // Array of { player: playerId, goals: X }
+    };
+
+    // 3. Update the Match document
+    const updatedMatch = await Match.findByIdAndUpdate(
+      matchId,
+      { $set: updateData },
       { new: true }
     );
 
-    if (!match) return res.status(404).json({ message: "Match not found" });
+    if (!updatedMatch) {
+      return res
+        .status(404)
+        .json({ message: "Match not found during update." });
+    }
 
-    res.status(200).json(match);
+    // 🔥 Re-run ALL stat updates after saving MOTM/Scorers
+    await recalculateStandings();
+    await updatePlayerStats();
+
+    res.status(200).json({
+      message: "Match stats successfully saved and updated.",
+      match: updatedMatch,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error setting MOTM", error });
+    console.error("Error saving match stats:", error);
+    res.status(500).json({ message: "Error saving match stats" });
   }
 };
 
-
-//Reset tournament
+// ------------------------
+// 5. Reset tournament
+// ------------------------
 export const resetTournament = async (req, res) => {
   try {
     // 1️⃣ Delete all matches
-    await Match.deleteMany({});
+    await Match.deleteMany({}); // 2️⃣ Reset all team stats
 
-    // 2️⃣ Reset all team stats
     await Team.updateMany(
       {},
       {
@@ -140,6 +168,15 @@ export const resetTournament = async (req, res) => {
         goalsAgainst: 0,
         goalDifference: 0,
         points: 0,
+      }
+    );
+
+    // 3️⃣ Reset all Player stats (Crucial for the new model)
+    await Player.updateMany(
+      {},
+      {
+        goals: 0,
+        motmCount: 0,
       }
     );
 

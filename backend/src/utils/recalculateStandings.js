@@ -18,51 +18,47 @@ const recalculateStandings = async () => {
   );
 
   // 2️⃣ Get finished matches
-  const matches = await Match.find({ status: "finished" })
-    .populate("homeTeam")
-    .populate("awayTeam");
+  const matches = await Match.find({ status: "finished" });
+
+  
 
   // 3️⃣ Recalculate standings
   for (const match of matches) {
-    const home = match.homeTeam;
-    const away = match.awayTeam;
+    const home = await Team.findById(match.homeTeam);
+    const away = await Team.findById(match.awayTeam);
 
-    const homeScore = match.homeScore;
-    const awayScore = match.awayScore;
+    if (!home || !away) continue;
 
-    // Played
     home.played += 1;
     away.played += 1;
 
-    // Goals
-    home.goalsFor += homeScore;
-    home.goalsAgainst += awayScore;
-    away.goalsFor += awayScore;
-    away.goalsAgainst += homeScore;
+    home.goalsFor += match.homeScore;
+    home.goalsAgainst += match.awayScore;
+    away.goalsFor += match.awayScore;
+    away.goalsAgainst += match.homeScore;
 
-    // Result
-    if (homeScore > awayScore) {
+    if (match.homeScore > match.awayScore) {
       home.wins += 1;
       home.points += 3;
       away.losses += 1;
-    } else if (homeScore === awayScore) {
+    } else if (match.homeScore < match.awayScore) {
+      away.wins += 1;
+      away.points += 3;
+      home.losses += 1;
+    } else {
       home.draws += 1;
       away.draws += 1;
       home.points += 1;
       away.points += 1;
-    } else {
-      away.wins += 1;
-      away.points += 3;
-      home.losses += 1;
     }
 
-    // Goal difference
     home.goalDifference = home.goalsFor - home.goalsAgainst;
     away.goalDifference = away.goalsFor - away.goalsAgainst;
 
     await home.save();
     await away.save();
   }
+
 };
 
 export default recalculateStandings;

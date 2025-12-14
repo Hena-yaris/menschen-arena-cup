@@ -8,7 +8,7 @@ import teamRoutes from "./src/routes/teamRoutes.js"
 import matchRoutes from "./src/routes/matchRoutes.js"
 import motmRoutes from "./src/routes/motmRoutes.js"
 import scorerRoutes from "./src/routes/scorerRoutes.js"
-import standingsRoutes from "./src/routes/standingsRoutes"
+import standingsRoutes from "./src/routes/standingsRoutes.js";
 
 
 
@@ -29,7 +29,7 @@ app.use("/api/teams", teamRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/scorers", scorerRoutes);
 app.use("/api/motm", motmRoutes);
-app.use("/api/standings",standingsRoutes)
+app.use("/api/standings", standingsRoutes);
 
 
 // Base route

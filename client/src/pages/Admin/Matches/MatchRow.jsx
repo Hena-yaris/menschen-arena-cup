@@ -27,12 +27,15 @@ const MatchRow = ({ match, onSave }) => {
     setIsSaving(false);
   };
 
+  const h= Number(homeScore);
+  const a = Number(awayScore)
+
   // Color logic for the left border of the row
   let rowColor = "border-gray-700/50"; // Default (Scheduled)
   if (isFinished) {
-    if (homeScore > awayScore) {
+    if (h > a) {
         rowColor = "border-green-500/50"; // Home win
-    } else if (awayScore > homeScore) {
+    } else if (a > h) {
         rowColor = "border-orange-500/50"; // Away win
     } else {
         rowColor = "border-yellow-500/50"; // Draw

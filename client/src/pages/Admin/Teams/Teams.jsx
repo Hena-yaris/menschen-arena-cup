@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../../api/axios.js"; 
 import TeamCard from "../../../components/TeamCard.jsx"; 
 import { Users, PlusCircle, RefreshCw, Zap } from "lucide-react";
+import Players from "../Players/Players.jsx";
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -121,6 +122,10 @@ export default function Teams() {
           {creating ? "Adding..." : "Add Team"}
         </button>
       </form>
+      
+      {/**create players */}
+      <Players/>
+      
 
       {error && (
         <div className="p-3 bg-red-900/50 border border-red-500 rounded text-red-400 mb-4">
@@ -143,7 +148,7 @@ export default function Teams() {
                     : "bg-gray-700 text-gray-500 cursor-not-allowed"
                 }
             `}
-          disabled={teams.length < MIN_TEAMS || teams.length>MIN_TEAMS}
+          disabled={teams.length < MIN_TEAMS || teams.length > MIN_TEAMS}
         >
           <Zap className="inline w-5 h-5 mr-2" />
           Generate Round Robin Matches ({teams.length} / {MIN_TEAMS} minimum)

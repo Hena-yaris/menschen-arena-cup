@@ -11,6 +11,7 @@ import Matches from '../pages/Admin/Matches/Matches'
 import PlayerStats from '../pages/Public/playerStats'
 import LatestMatchStats from '../pages/Public/LatestMatchStats'
 import ScheduleEditor from '../pages/Admin/Matches/ScheduleEditor'
+import TournamentReset from '../pages/Admin/Matches/TournamentReset'
 // import AdminLayout from '../layouts/AdminLayout'
 
 const AppRouter = () => {
@@ -32,8 +33,8 @@ const AppRouter = () => {
           <Route path="/admin/teams" element={<Teams />} />
           <Route path="/admin/matches" element={<Matches />} />
           <Route path="/admin/schedule" element={<ScheduleEditor/>} />
-          {/* <Route path="/admin/topscorers" element={<TopScorers />} /> */}
-          {/* <Route path="/admin/topscorers" element={<Goa />} /> */}
+          <Route path="/admin/reset" element={<TournamentReset/>} />
+          
           {/* <Route path="/admin/finals" element={<Finals />} /> */}
         </Route>
       </Routes>

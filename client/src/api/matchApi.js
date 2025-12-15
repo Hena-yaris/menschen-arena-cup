@@ -14,3 +14,5 @@ export const updateMatchSchedule = (scheduleUpdates)=> {
 }
 
 export const getLatestMatchStats = () => API.get("/matches/latest/stats");
+
+export const resetAllTournamentData =()=> API.delete("/matches/reset")

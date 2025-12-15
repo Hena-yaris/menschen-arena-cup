@@ -52,7 +52,8 @@ const LatestMatchStats = () => {
 
   const homeTeamName = match.homeTeam?.name || "Home Team";
   const awayTeamName = match.awayTeam?.name || "Away Team";
-  const matchDate = new Date(match.matchDate).toLocaleDateString("en-US", {
+  const matchDate = new Date(match.date).toLocaleDateString("en-US", {
+    // <-- FIX: Changed from match.matchDate to match.date
     month: "short",
     day: "numeric",
     year: "numeric",

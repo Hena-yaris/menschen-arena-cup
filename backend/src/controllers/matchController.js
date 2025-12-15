@@ -71,8 +71,118 @@ export const getAllMatches = async (req, res) => {
   }
 };
 
+
 // ------------------------
-// 3. Update match score
+// 3. Get Latest Match Stats (for "Match of the Day" public view)
+// ------------------------
+export const getLatestMatchStats = async (req, res) => {
+  try {
+    const latestMatch = await Match.findOne({
+      homeScore: { $ne: null },
+      awayScore: { $ne: null },
+    })
+      .sort({ date: -1, createdAt: -1 }) // Using 'date' from your schema
+      .limit(1)
+      .populate("homeTeam", "name")
+      .populate("awayTeam", "name")
+
+      // --- 1. POPULATE MAN OF THE MATCH (Corrected path: manOfTheMatch) ---
+      .populate("manOfTheMatch", "name team") // <-- CORRECTED!
+
+      // --- 2. POPULATE SCORERS' PLAYER DATA ---
+      .populate({
+        path: "scorers.player",
+        select: "name team",
+      });
+
+    // --- 3. NESTED POPULATION FOR TEAM NAMES ---
+    // We need the Team Name for the MOTM player and the Scorers.
+
+    // a) Populate the Team field inside the manOfTheMatch Player object
+    await latestMatch.populate({
+      path: "manOfTheMatch.team",
+      select: "name",
+    });
+
+    // b) Populate the Team field inside each Scorer's Player object (More complex)
+    if (latestMatch && latestMatch.scorers.length > 0) {
+      // Because Mongoose nested population can be tricky, we manually populate the team name
+      // for each player within the scorers array.
+      for (const scorer of latestMatch.scorers) {
+        // Ensure the player object and a team ID exist before attempting to populate
+        if (scorer.player && scorer.player.team) {
+          await latestMatch.model("Player").populate(scorer.player, {
+            path: "team",
+            select: "name",
+          });
+        }
+      }
+    }
+
+    if (!latestMatch) {
+      return res.status(404).json({ message: "No completed matches found" });
+    }
+
+    res.status(200).json(latestMatch);
+  } catch (error) {
+    // Log the exact error to the terminal for diagnosis
+    console.error("Mongoose Population/Server Error:", error);
+    // Send a generic 500 response to the client
+    res
+      .status(500)
+      .json({ message: "Server error occurred while fetching match data." });
+  }
+};
+
+// ------------------------
+// 4. Update Match Schedule (Bulk Update)
+// ------------------------
+export const updateMatchSchedule = async (req, res) => {
+    // req.body should be an array of { matchId: string, newDate: string }
+    const scheduleUpdates = req.body;
+
+    if (!Array.isArray(scheduleUpdates) || scheduleUpdates.length === 0) {
+        return res.status(400).json({ message: "Invalid or empty list of schedule updates." });
+    }
+
+    try {
+        const updatePromises = scheduleUpdates.map(update => {
+            // Validate the required fields
+            if (!update.matchId || !update.newDate) {
+                console.warn(`Skipping invalid update object: ${JSON.stringify(update)}`);
+                return Promise.resolve(null); // Skip invalid entries
+            }
+
+            // Update the match date using Mongoose
+            return Match.findByIdAndUpdate(
+                update.matchId,
+                { date: new Date(update.newDate) }, // Convert string to Date object
+                { new: true, runValidators: true } // Return the updated doc, run schema validation
+            );
+        });
+
+        // Run all updates concurrently
+        const results = await Promise.all(updatePromises);
+        
+        // Filter out any null results from invalid entries
+        const updatedMatches = results.filter(result => result !== null);
+
+        res.status(200).json({
+            message: "Match schedule updated successfully.",
+            updatedCount: updatedMatches.length,
+            // Optionally, you might return only the IDs and dates instead of full match objects
+        });
+
+    } catch (error) {
+        console.error("Error updating match schedule:", error);
+        res.status(500).json({ message: "Error updating match schedule", error });
+    }
+};
+
+
+
+// ------------------------
+// 5. Update match score
 // ------------------------
 export const updateMatchScore = async (req, res) => {
   try {

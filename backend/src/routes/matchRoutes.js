@@ -6,13 +6,17 @@ import {
   getAllMatches,
   updateMatchScore,
   resetTournament,
-  saveMatchStats, // <-- NEW IMPORT
+  saveMatchStats,
+  getLatestMatchStats,
+  updateMatchSchedule
 } from "../controllers/matchController.js";
 
 const router = express.Router();
 
 // Generate double round-robin matches
 router.post("/generate", generateMatches);
+
+router.put('/schedule', updateMatchSchedule); // <-- NEW BULK SCHEDULE ROUTE
 
 // Get all matches
 router.get("/", getAllMatches);
@@ -25,5 +29,7 @@ router.put("/:id/score", updateMatchScore);
 
 // NEW ROUTE: Save Man of the Match and Goal Scorers (POST request to a dedicated endpoint)
 router.post("/stats", saveMatchStats);
+
+router.get("/latest/stats", getLatestMatchStats)
 
 export default router;

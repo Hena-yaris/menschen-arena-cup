@@ -7,7 +7,7 @@ import Standing from '../pages/Public/Standing'
 import Fixtures from '../pages/Public/Fixtures'
 import Teams from '../pages/Admin/Teams/Teams'
 import Matches from '../pages/Admin/Matches/Matches'
-import PlayerStats from '../pages/Public/playerStats'
+import PlayerStats from "../pages/Public/PlayerStats"
 import LatestMatchStats from '../pages/Public/LatestMatchStats'
 import ScheduleEditor from '../pages/Admin/Matches/ScheduleEditor'
 import TournamentReset from '../pages/Admin/Matches/TournamentReset'

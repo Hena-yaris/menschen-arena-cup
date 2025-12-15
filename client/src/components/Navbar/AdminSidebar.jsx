@@ -21,7 +21,7 @@ const AdminSidebar = ({ isMobileOpen, onToggle }) => {
       label: "Match Control (Scoring)",
     },
     { to: "/admin/schedule", icon: TrendingUp, label: "Schedule Matches" },
-    { to: "/admin/reset", icon: TrendingUp, label: "Dangerous Zone" },
+    { to: "/admin/reset", icon: TrendingUp, label: "Danger Zone" },
     // { to: "/admin/knockout", icon: Zap, label: "Knockout Stage" },
   ];
 

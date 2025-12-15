@@ -8,7 +8,6 @@ const PublicNavbar = () => {
     { to: "/playersLeader", label: "playersLeaderBoard" },
     { to: "/fixtures", label: "Fixtures" },
     { to: "/matchstatus", label: "Today's Match" },
-    { to: "/motm", label: "Man of the Match" },
     { to: "/knockout", label: "Knockout" },
   ];
 

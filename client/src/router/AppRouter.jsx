@@ -5,13 +5,13 @@ import PublicLayout from '../layouts/PublicLayout'
 import AdminLayout from '../layouts/AdminLayout'
 import Standing from '../pages/Public/Standing'
 import Fixtures from '../pages/Public/Fixtures'
-import ManOfTheMatch from '../pages/Public/ManOfTheMatch'
 import Teams from '../pages/Admin/Teams/Teams'
 import Matches from '../pages/Admin/Matches/Matches'
 import PlayerStats from '../pages/Public/playerStats'
 import LatestMatchStats from '../pages/Public/LatestMatchStats'
 import ScheduleEditor from '../pages/Admin/Matches/ScheduleEditor'
 import TournamentReset from '../pages/Admin/Matches/TournamentReset'
+import Knockout from '../pages/Public/Knockout'
 // import AdminLayout from '../layouts/AdminLayout'
 
 const AppRouter = () => {
@@ -24,7 +24,7 @@ const AppRouter = () => {
           <Route path="/standing" element={<Standing />} />
           <Route path="/playersLeader" element={<PlayerStats />} />
           <Route path="/fixtures" element={<Fixtures />} />
-          <Route path="/motm" element={<ManOfTheMatch />} />
+          <Route path="/knockout" element={<Knockout/>} />
           <Route path="/matchstatus" element={<LatestMatchStats/>} />
         </Route>
 

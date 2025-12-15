@@ -14,7 +14,6 @@ import {
 // Receive props from AdminLayout
 const AdminSidebar = ({ isMobileOpen, onToggle }) => {
   const navItems = [
-    // ... (Your navItems array remains the same)
     { to: "/admin/teams", icon: Users, label: "Manage Teams & Setup" },
     {
       to: "/admin/matches",
@@ -23,7 +22,7 @@ const AdminSidebar = ({ isMobileOpen, onToggle }) => {
     },
     { to: "/admin/schedule", icon: TrendingUp, label: "Schedule Matches" },
     { to: "/admin/reset", icon: TrendingUp, label: "Dangerous Zone" },
-    { to: "/admin/knockout", icon: Zap, label: "Knockout Stage" },
+    // { to: "/admin/knockout", icon: Zap, label: "Knockout Stage" },
   ];
 
   const activeClasses =

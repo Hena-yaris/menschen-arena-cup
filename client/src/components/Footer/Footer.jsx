@@ -7,10 +7,10 @@ function Footer() {
   // Links data for easy maintenance
   const quickLinks = [
     { label: "Home", href: "/" },
-    { label: "Live Matches", href: "/live" },
-    { label: "Predictions", href: "/predictions" },
-    { label: "Teams", href: "/teams" },
-    { label: "Login / Signup", href: "/auth" },
+    { label: "Live Matches", href: "#" },
+    { label: "Predictions", href: "#" },
+    { label: "Teams", href: "#" },
+    { label: "Login / Signup", href: "#" },
   ];
 
   return (
@@ -59,7 +59,7 @@ function Footer() {
           <ul className="space-y-3 text-sm">
             <li>
               <a
-                href="/rules"
+                href="#"
                 className="hover:text-orange-300 text-gray-300 transition-colors duration-200 cursor-pointer"
               >
                 Tournament Rules
@@ -67,7 +67,7 @@ function Footer() {
             </li>
             <li>
               <a
-                href="/privacy"
+                href="#"
                 className="hover:text-orange-300 text-gray-300 transition-colors duration-200 cursor-pointer"
               >
                 Privacy Policy
@@ -75,7 +75,7 @@ function Footer() {
             </li>
             <li>
               <a
-                href="/contact"
+                href="#"
                 className="hover:text-orange-300 text-gray-300 transition-colors duration-200 cursor-pointer"
               >
                 Contact Us
@@ -83,7 +83,7 @@ function Footer() {
             </li>
             <li>
               <a
-                href="/"
+                href="#"
                 className="hover:text-orange-300 text-gray-300 transition-colors duration-200 cursor-pointer"
               >
                 FAQ

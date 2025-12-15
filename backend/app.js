@@ -3,11 +3,12 @@ import dotenv, { config } from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
 
-import adminRoutes from "./src/routes/adminRoutes.js"
+// import adminRoutes from "./src/routes/adminRoutes.js"
 import teamRoutes from "./src/routes/teamRoutes.js"
 import matchRoutes from "./src/routes/matchRoutes.js"
 import standingsRoutes from "./src/routes/standingsRoutes.js";
 import playerRoutes from "./src/routes/playerRoutes.js";
+// import adminRoutes from "./src/routes/adminRoutes.js";
 
 
 
@@ -23,17 +24,20 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/admin", adminRoutes);
+// app.use("/api/admin", adminRoutes);
 app.use("/api/teams", teamRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/standings", standingsRoutes);
 app.use("/api/players", playerRoutes);
+
+// app.use("/api/admin",adminRoutes)
 
 
 // Base route
 app.get("/", (req, res) => {
   res.send("Menschen Arena Cup API is running...");
 });
+
 
 // MongoDB Connect + Server Start
 const PORT = process.env.PORT || 5000;

@@ -21,7 +21,7 @@ const AdminSidebar = ({ isMobileOpen, onToggle }) => {
       icon: ClipboardList,
       label: "Match Control (Scoring)",
     },
-    { to: "/admin/stats", icon: TrendingUp, label: "Player Stats" },
+    { to: "/admin/schedule", icon: TrendingUp, label: "Schedule Matches" },
     { to: "/admin/knockout", icon: Zap, label: "Knockout Stage" },
   ];
 

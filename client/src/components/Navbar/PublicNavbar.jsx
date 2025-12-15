@@ -5,8 +5,9 @@ const PublicNavbar = () => {
   // Define navigation links
   const navLinks = [
     { to: "/standing", label: "Standings" },
+    { to: "/playersLeader", label: "playersLeaderBoard" },
     { to: "/fixtures", label: "Fixtures" },
-    { to: "/topscorers", label: "Top Scorers" },
+    { to: "/matchstatus", label: "Today's Match" },
     { to: "/motm", label: "Man of the Match" },
     { to: "/knockout", label: "Knockout" },
   ];

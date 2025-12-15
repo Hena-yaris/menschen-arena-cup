@@ -2,7 +2,7 @@
 // src/pages/Admin/Matches.jsx
 
 import { useEffect, useState } from "react";
-import { getMatches, updateMatchScore } from "../../../api/MatchApi.js";
+import { getMatches, updateMatchScore } from "../../../api/matchApi.js";
 import MatchRow from "./MatchRow.jsx";
 import MatchStatEditor from "./MatchStatEditor.jsx"; // <-- NEW IMPORT
 import { ClipboardList, Loader2 } from "lucide-react"; 

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 // Assuming you have this API call based on our previous step
 import { getPlayerLeaderboards } from "../../api/playersApi.js";
+import { retryRequest } from "../../utils/retryRequest.js";
 import { Shirt, Trophy, Loader2 } from "lucide-react";
 
 // --- Reusable Leaderboard Card/Table Component ---
@@ -115,15 +116,22 @@ const LeaderboardCard = ({
 const PlayerStats = () => {
   const [allPlayers, setAllPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
   const fetchLeaderboards = async () => {
     try {
       setLoading(true);
-      const res = await getPlayerLeaderboards();
+      setError(null);
+      const res = await retryRequest(
+        () => getPlayerLeaderboards(),
+        1 // retry once
+      );
       // The API returns all players sorted by Goals DESC then MOTM DESC
       setAllPlayers(res.data);
     } catch (err) {
-      console.error("Failed to load player stats", err);
+      setError("Server is busy. Please try again shortly.");
+      setAllPlayers([]);
     } finally {
       setLoading(false);
     }
@@ -148,6 +156,21 @@ const PlayerStats = () => {
       <div className="text-center p-10 text-orange-400">
         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-3" />
         Loading Player Leaderboards...
+      </div>
+    );
+  }
+
+
+  if (error) {
+    return (
+      <div className="text-center p-10 bg-gray-800 rounded-xl border border-gray-700 max-w-lg mx-auto">
+        <p className="text-red-400 font-semibold mb-2">⚠️ {error}</p>
+        <button
+          onClick={fetchLeaderboards}
+          className="mt-3 px-4 py-2 bg-orange-500 rounded hover:bg-orange-600"
+        >
+          Retry
+        </button>
       </div>
     );
   }

@@ -2,19 +2,26 @@
 
 import { useEffect, useState } from "react";
 import getStandings from "../../api/standingsApi.js";
+import { retryRequest } from "../../utils/retryRequest.js";
 import { Loader2 } from "lucide-react";
 const Standings = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error,setError] = useState(null);
 
   useEffect(() => {
     const fetchStandings = async () => {
       try {
         setLoading(true);
-        const res = await getStandings();
+        setError(null);
+        const res = await retryRequest(
+          () => getStandings(),
+          1 // retry once
+        );
         setTeams(res.data);
       } catch (err) {
-        console.error("Failed to load standings", err);
+        setError("Server is busy. Please try again shortly.");
+
       } finally {
         setLoading(false);
       }
@@ -28,6 +35,21 @@ const Standings = () => {
       <div className="text-center p-10 text-orange-400">
         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-3" />
         Loading standings...
+      </div>
+    );
+  }
+
+
+  if (error) {
+    return (
+      <div className="text-center p-10 bg-gray-800 rounded-xl border border-gray-700 max-w-lg mx-auto">
+        <p className="text-red-400 font-semibold mb-2">⚠️ {error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-3 px-4 py-2 bg-orange-500 rounded hover:bg-orange-600"
+        >
+          Retry
+        </button>
       </div>
     );
   }

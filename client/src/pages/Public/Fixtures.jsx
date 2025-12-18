@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getMatches } from "../../api/matchApi";
+import { retryRequest } from "../../utils/retryRequest";
 import { Calendar, CheckCircle, Clock, Frown } from "lucide-react";
 
 // Helper function to format date for public display (local timezone)
@@ -35,7 +36,9 @@ const Fixtures = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await getMatches();
+      setError(null); // ✅ reset error
+      // ✅ retry once for Render cold start
+      const res = await retryRequest(() => getMatches(), 1);
 
       // Your API might return data directly or nested (e.g., res.data.matches)
       const fetchedMatches = res.data.matches || res.data;
@@ -55,10 +58,9 @@ const Fixtures = () => {
       });
 
       setMatches(sortedMatches);
-      setError(null);
     } catch (err) {
-      console.error("Failed to fetch matches:", err);
-      setError("Could not load match data. Please check the server.");
+      setError("Server is busy. Please try again shortly.");
+      setMatches([]); // ✅ avoid stale data
     } finally {
       setLoading(false);
     }
@@ -73,9 +75,19 @@ const Fixtures = () => {
     );
   }
 
-  if (error) {
-    return <div className="text-center p-10 text-red-400">{error}</div>;
-  }
+ if (error) {
+   return (
+     <div className="text-center p-10 bg-gray-800 rounded-xl border border-gray-700 max-w-lg mx-auto">
+       <p className="text-red-400 font-semibold mb-3">⚠️ {error}</p>
+       <button
+         onClick={fetchData} // ✅ retry without reload
+         className="px-4 py-2 bg-orange-500 rounded hover:bg-orange-600"
+       >
+         Retry
+       </button>
+     </div>
+   );
+ }
 
   if (matches.length === 0) {
     return (

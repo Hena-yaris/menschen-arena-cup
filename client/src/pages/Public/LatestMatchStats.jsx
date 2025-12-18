@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getLatestMatchStats } from "../../api/matchApi";
+import { retryRequest } from "../../utils/retryRequest";
 
 import { Trophy, Dribbble, Calendar, Loader2 } from "lucide-react";
 
@@ -9,15 +10,22 @@ import { Trophy, Dribbble, Calendar, Loader2 } from "lucide-react";
 const LatestMatchStats = () => {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] =useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const res = await getLatestMatchStats();
+        setError(null);
+
+        const res = await retryRequest(
+          () => getLatestMatchStats(),
+          1 // retry once
+        );
         setMatch(res.data);
+
       } catch (err) {
-        console.error("Failed to load latest match stats", err);
+         setError("Server is busy. Please try again shortly.");
         setMatch(null); // Explicitly set null on error/404
       } finally {
         setLoading(false);
@@ -34,6 +42,22 @@ const LatestMatchStats = () => {
       </div>
     );
   }
+
+
+  if (error) {
+    return (
+      <div className="text-center p-10 bg-gray-800 rounded-xl border border-gray-700 max-w-lg mx-auto">
+        <p className="text-red-400 font-semibold mb-2">⚠️ {error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-3 px-4 py-2 bg-orange-500 rounded hover:bg-orange-600"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
 
   // Fallback if no completed matches are found
   if (!match) {

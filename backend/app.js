@@ -20,7 +20,12 @@ const app = express();
 
 
 //Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // later replace with Netlify URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(express.json());
 
 // Routes
@@ -51,5 +56,7 @@ mongoose
     );
   })
   .catch((err) => console.log("❌ MongoDB error:", err));
+
+  
 
 export default app;

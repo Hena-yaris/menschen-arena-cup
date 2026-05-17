@@ -11,6 +11,15 @@ An authentic, live tracking tournament web application designed to bring campus 
 
 ---
 
+## 🌍 Live Demo
+
+Experience the live application:
+
+🔗 [Open Menschen Arena Cup](https://menschenarena.netlify.app/)
+
+
+---
+
 ## 🎯 Key Features
 
 ### 👥 Public Features
